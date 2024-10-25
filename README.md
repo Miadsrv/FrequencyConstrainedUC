@@ -51,13 +51,13 @@ loss_eq
 /;
 ```
 
-- The python code that is used to train each constraint is included in "training" folder.
+- The dataset and the python code that is used to train each constraint is included in "training" folder.
 
 
 ## Analytical Corrective FCUC (ACFCUC)
 
 - Choose the desired UFLS cost in the setting section.
-- Uncomment the indicator constraint section for this model (see below).0
+- Uncomment the indicator constraint section for this model (see below).
 
 ```sh
 *$ontext
@@ -90,7 +90,7 @@ loop((t,i,ii),
 putclose fgrb;
 *$offtext
 ```
-- The python code that is used to train each constraint is included in "training" folder.
+- The dataset and the python code that is used to train each constraint is included in "training" folder.
 
 ## Contact
 > Feel free to contact msarvarizadeh@comillas.edu with any sort of questions or feedback!
