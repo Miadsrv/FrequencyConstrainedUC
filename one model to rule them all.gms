@@ -7,7 +7,7 @@ alias (t,tt);
 alias (i,ii,iii);
 
 ***************************************************************
-*** Analytical FCUC sets and parameters
+*** Sets and parameters
 ***************************************************************
 set       x1r  x1 segments      /x1r1*x1r6/;
 set       x2r  x2 segments      /x2r1*x2r6/;
@@ -37,11 +37,11 @@ scalar    Da        load damping factor                    /0.01/;
 ***************************************************************
 *** SETTINGS
 ***************************************************************
-*$set modelname  ACFCUC
-*$set season     summer
-*$set day        d4
-*$set deltaF_max 2.5
-*$set cost       20
+$set modelname  ACFCUC
+$set season     summer
+$set day        d4
+$set deltaF_max 2.5
+$set cost       20
 
 
 ***************************************************************
@@ -132,12 +132,6 @@ binary variable   x_matrix     (t,i,ii)   2D commitment binary variable
 positive variable pos_aux      (t,i)      positive auxilary variable
 
 positive variable reserve      (t,i)      reserve
-
-variable abtest(t,i);
-variable ab(t,i);
-variable aa(t,i);
-variable ac(t,i);
-
 
 
 ***************************************************************
@@ -263,9 +257,6 @@ cost_aux(t)..
          
 cost_aux_ufls(t)..
          c_aux(t) =e= sum(i,co_gen(t,i)+co_su(t,i)+(ufls(t,i)*%cost%*2/(24*365)));
-         
-*cost_aux_aufls(t)..
-*         c_aux(t) =e= sum(i,co_gen(t,i)+co_su(t,i)+(p_ufls(t,i)*%cost%*2/(24*365)));
 
 bin_set1(t,i)$(ord(t) gt 1)..
          y(t,i) - z(t,i) =e= x(t,i) - x(t-1,i);
@@ -546,7 +537,6 @@ P_crit_quad_eq(t,i)..
         ord(iii) <> ord(i)),x_matrix(t,ii,iii)*inertia(ii)*mbase(ii)*kg(iii)*mbase(iii))/Td;
         
 
-
 ***************************************************************
 *** MODEL DEFINITIONS
 ***************************************************************
@@ -740,19 +730,13 @@ putclose fgrb;
 solve %modelname% using mip minimizing obj;
 
 parameter time_elapsed, solver_time, var_num, dvar_num, eq_num, total_ufls;
-*, nadirtest(t,i);
-*,frequency_nadir_approx(t,i), frequency_nadir_exact(t,i);
+
 
 time_elapsed = %modelname%.etSolver;
 solver_time = %modelname%.resUsd;
 var_num = %modelname%.numVar;
 dvar_num = %modelname%.numDVar;
 eq_num = %modelname%.numEqu;
-*nadirtest(t,i)=3.6296717+(-0.71166133*inertia_AO.l(t,i))+(0.08045439*k_AO.l(t,i))+(-6.46111846*g.l(t,i))+(5.55345005*re.l(t,i))
-*nadirtest(t,i)=-0.07355444+(-0.35844117*inertia_AO.l(t,i))+(0.05426479*k_AO.l(t,i))+(-4.26063478*g.l(t,i))+(2.1794269*re.l(t,i));
-*frequency_nadir_approx(t,i)=(sum(pr,ap(pr)*ap(pr)*lambdaP.l(t,i,pr))*50*Ta)/(-4*((sum(x1r,ax1(x1r)*ax1(x1r)*lambdaX1.l(t,i,x1r))-sum(x2r,ax2(x2r)*ax2(x2r)*lambdaX2.l(t,i,x2r)))/(alpha*betta)+0.01*d(t,"%day%","%season%")*Ta*g.l(t,i)*50*0.25));
-*frequency_nadir_exact(t,i)=(50*Ta*g.l(t,i)*g.l(t,i)/(4*inertia_AO.l(t,i)*re.l(t,i)+0.01*d(t,"%day%","%season%")*Ta*g.l(t,i)*50))*x.l(t,i);
-
 
 $onEpsToZero
 Execute_Unload '%modelname%_%cost%_%season%_%day%.gdx'
